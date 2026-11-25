@@ -1,0 +1,22 @@
+--- a/ggml/src/ggml-cuda/CMakeLists.txt
++++ b/ggml/src/ggml-cuda/CMakeLists.txt
+@@ -80,7 +80,7 @@
+     foreach(ARCHS IN ITEMS CMAKE_CUDA_ARCHITECTURES CMAKE_CUDA_ARCHITECTURES_NATIVE)
+         set(FIXED_ARCHS "")
+         foreach(ARCH IN LISTS ${ARCHS})
+-            if (ARCH MATCHES "^12[0-9](-real|-virtual)?$")
++            if (ARCH MATCHES "^12[0-9](-real|-virtual)?$" AND NOT GGML_CUDA_KEEP_PLAIN_12X)
+                 string(REGEX REPLACE "^(12[0-9])((-real|-virtual)?)$" "\\1a\\2" FIXED_ARCH ${ARCH})
+                 message(STATUS "Replacing ${ARCH} in ${ARCHS} with ${FIXED_ARCH}")
+                 list(APPEND FIXED_ARCHS "${FIXED_ARCH}")
+--- a/ggml/src/ggml-cuda/common.cuh
++++ b/ggml/src/ggml-cuda/common.cuh
+@@ -283,7 +283,7 @@
+ #define AMPERE_MMA_AVAILABLE
+ #endif // !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_AMPERE
+ 
+-#if !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_BLACKWELL && __CUDA_ARCH__ < GGML_CUDA_CC_RUBIN
++#if !defined(GGML_USE_HIP) && (defined(__CUDA_ARCH_FEAT_SM120_ALL) || defined(__CUDA_ARCH_FEAT_SM121_ALL))
+ #    define BLACKWELL_MMA_AVAILABLE
+ #endif // !defined(GGML_USE_HIP) && __CUDA_ARCH__ >= GGML_CUDA_CC_BLACKWELL
+ 

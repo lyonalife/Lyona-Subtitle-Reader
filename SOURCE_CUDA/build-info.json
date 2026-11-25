@@ -1,0 +1,35 @@
+{
+  "abi": 5,
+  "wrapper": "realtimetts-qwen-native 0.2.0",
+  "qwentts_commit": "b91bca43f9adc5df839161ce4c88b0f6743b27ff",
+  "ggml_commit": "c044c6f03892f9d5e98213b05f8afea1f8b0d3c9",
+  "cuda_compiler": "12.9.86",
+  "msvc": "19.44",
+  "architectures": {
+    "sm_75": 141,
+    "sm_86": 141,
+    "sm_89": 141,
+    "sm_120": 141,
+    "sm_120a": 141
+  },
+  "ptx": "compute_75",
+  "files": {
+    "ggml-base.dll": "a60cda71987d67c49a98ca7a150b9ac5f24f8f53f9e4b5bff37695db16e78f0a",
+    "ggml-cpu.dll": "e1ec5e7afeb7c956bf7ad6cec4e2bb8ae5d5f6669396b9479fdf6eba0067bf1f",
+    "ggml-cuda.dll": "fcc921d2fddcb93010b875aea330f6b93185cefce160edd781f3afea9d5c406c",
+    "ggml.dll": "b44b75ff64dc39b21402a6b446ed02439a68858efbf209300670a45ed18e7b54",
+    "qwen.dll": "61a5d6a958a483766187bba9b924c71e58c5324ba4151a546b54e5ca94bbc184"
+  },
+  "compatibility_patch": "plain-sm120.patch",
+  "note": "Native sm_120a is included alongside plain sm_120; CPU backend is separate and unchanged.",
+  "memory_patch": {
+    "file": "low-vram-context.patch",
+    "abi": 5,
+    "default_context": 4096,
+    "subtitle_worker_context": 1024,
+    "dtype": "F32",
+    "cache_before_mib": 896,
+    "cache_after_mib": 224,
+    "oversized_request": "checked before generation, explicit error; unchanged full-context CPU recovery"
+  }
+}

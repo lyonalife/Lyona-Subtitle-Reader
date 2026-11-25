@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "changed_archive_entries": [
+    "LyonaSubtitleReader_Streamer/LyonaSubtitleReader_Streamer.exe",
+    "LyonaSubtitleReader_Streamer/LyonaWorker.exe",
+    "LyonaSubtitleReader_Streamer/SOURCE/subtitle_reader.py",
+    "LyonaSubtitleReader_Streamer/SHA256SUMS.txt"
+  ],
+  "all_other_archive_entries_byte_identical": true,
+  "embedded_pyz_runtime_hooks_and_other_modules_unchanged": true,
+  "menu_only_male": true,
+  "default_male": true,
+  "zip_crc": "PASS",
+  "internal_manifest": "PASS",
+  "new_zip_sha256": "71fe8767f3570034f3e940e8c93f7afd2b5925424bfaba34ff97f1ab24a372b7",
+  "parent_zip_sha256": "460813a7afee5accf8f5d14136e4e4dbe95465abfc456f14986660f42e8309c1",
+  "change": "Female hidden from VOICE_OPTIONS; existing DEFAULT_VOICE is male. Saved female selection falls back to male. No voice assets removed.",
+  "male_cuda_smoke": "PASS; packaged EXE worker generated and submitted audio without error",
+  "male_smoke_events": [
+    {
+      "type": "backend",
+      "backend": "CUDA",
+      "reason": "compute capability 8.9"
+    },
+    {
+      "type": "ready",
+      "load_seconds": 4.688
+    },
+    {
+      "type": "done",
+      "id": 1,
+      "elapsed": 9.71,
+      "backend": "CUDA",
+      "chars_per_second": 13.29,
+      "audio_seconds": 9.11,
+      "playback_rtf": 1.066
+    }
+  ],
+  "backup": "Stored separately outside publication folder",
+  "published": false
+}

@@ -1,0 +1,15 @@
+Исходники CUDA backend Qwen ABI 5.
+qwentts.cpp commit b91bca43f9adc5df839161ce4c88b0f6743b27ff.
+ggml commit c044c6f03892f9d5e98213b05f8afea1f8b0d3c9.
+Исходный пример freeman.wav исключён из архива; при сборке не используется.
+Распакуйте исходники, поместите ggml в каталог qwentts/ggml, примените plain-sm120.patch, затем low-vram-context.patch.
+Подробности памяти: LOW_VRAM_RU.txt.
+Патч сохраняет обычный sm_120 вместе с sm_120a. FP4-инструкции компилируются
+только для архитектур с соответствующей CUDA feature macro. Модель Q8 не заменяется.
+Нужны CMake, Ninja, MSVC x64, Windows SDK, CUDA Toolkit 12.9.
+В Developer Command Prompt:
+cmake -S qwentts -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DQWEN_SHARED=ON -DGGML_NATIVE=OFF -DGGML_CUDA=ON -DGGML_CUDA_NCCL=OFF -DGGML_CUDA_KEEP_PLAIN_12X=ON "-DCMAKE_CUDA_ARCHITECTURES=75-real;86-real;89-real;120-real;120a-real;75-virtual"
+cmake --build build --target qwen --parallel 4
+Для распространения не включайте PDB и проверяйте отсутствие локальных путей в DLL.
+Для сборки Python EXE скопируйте файлы из _internal/qwentts_cpp/lib в SOURCE/native_cuda.
+CPU backend является отдельным пакетом realtimetts-qwen-native-cpu 0.4.2 и не заменяется.

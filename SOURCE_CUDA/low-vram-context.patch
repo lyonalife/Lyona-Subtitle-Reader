@@ -1,0 +1,46 @@
+--- a/src/pipeline-tts.cpp
++++ b/src/pipeline-tts.cpp
+@@ -259,12 +259,25 @@
+         return false;
+     }
+ 
++    // The public subtitle worker bounds output at 420 tokens with fixed
++    // short ICL references. Keep ABI 5 and F32 precision; only capacity is
++    // configurable. Other callers retain the upstream 4096 default.
++    int talker_context = 4096;
++    if (const char * value = std::getenv("LYONA_QWEN_CONTEXT")) {
++        char * end = nullptr;
++        long requested = std::strtol(value, &end, 10);
++        if (end != value && *end == '\0' && requested >= 512 && requested <= 4096 && requested % 256 == 0) {
++            talker_context = (int) requested;
++        } else {
++            qt_log(QT_LOG_WARN, "[Lyona] Invalid LYONA_QWEN_CONTEXT; retaining 4096");
++        }
++    }
+     // KV caches, one set per slot: the talker holds the LM context up
+     // to 4096 positions (the longest ICL prompt observed is ~250 +
+     // max_new_tokens ~ 1500, so 4096 has 60% headroom). Predictor holds
+     // one frame of 16 sub-steps per slot.
+     if (!kv_cache_init(&pt->talker_kv, pt->talker.num_hidden_layers, pt->talker.num_key_value_heads,
+-                       pt->talker.head_dim, 4096, pt->max_batch, pt->backend)) {
++                       pt->talker.head_dim, talker_context, pt->max_batch, pt->backend)) {
+         ggml_backend_sched_free(pt->sched);
+         pt->sched = NULL;
+         pipeline_codec_free(&pt->codec);
+@@ -891,6 +904,16 @@
+         return tts_admit_fail(job, QT_STATUS_GENERATE_FAILED);
+     }
+     s.perf.build_ms = t_build.ms();
++
++    // Reject before any generation instead of silently shortening a phrase
++    // or overflowing KV. The GUI can recover via the unchanged full-context
++    // CPU backend for exceptional prompts outside the subtitle budget.
++    if ((int64_t) s.prompt.T_ctx + params->max_new_tokens > pt->talker_kv.max_seq_len) {
++        qt_set_error("native Qwen KV capacity exceeded: prompt=%d output_budget=%d capacity=%d; no audio truncated",
++                     s.prompt.T_ctx, params->max_new_tokens, pt->talker_kv.max_seq_len);
++        e->slots.pop_back();
++        return tts_admit_fail(job, QT_STATUS_INVALID_PARAMS);
++    }
+ 
+     if (params->dump_dir) {
+         DebugDumper d;

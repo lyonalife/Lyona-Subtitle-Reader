@@ -1,0 +1,10 @@
+Pillow==12.3.0
+pytesseract==0.3.13
+pygame==2.6.1
+obsws-python==1.8.1
+opencv-python-headless>=4.12,<5
+realtimetts[qwen]==0.8.10
+PyInstaller==6.22.3
+pefile==2024.8.26
+
+windows-capture==2.0.1
